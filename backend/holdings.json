@@ -1,0 +1,118 @@
+[
+    {
+        "Ticker": "INFY",
+        "Company": "Infosys Ltd (INFY)",
+        "Quantity": 9,
+        "Price": 1913.75
+    },
+    {
+        "Ticker": "ZOMATO",
+        "Company": "Zomato Ltd (ZOMATO)",
+        "Quantity": 35,
+        "Price": 229.9
+    },
+    {
+        "Ticker": "axisbank",
+        "Company": "Axis Bank Ltd (AXISBANK)",
+        "Quantity": 8,
+        "Price": 1021.4,
+        "BuyPrice": 1021.4,
+        "AverageBuyPrice": 15752.675
+    },
+    {
+        "Ticker": "recltd",
+        "Company": "REC Limited (RECLTD)",
+        "Quantity": 10,
+        "Price": 425.1,
+        "BuyPrice": 400.0,
+        "AverageBuyPrice": 400.0
+    },
+    {
+        "Ticker": "sbin",
+        "Company": "State Bank of India (SBIN)",
+        "Quantity": 10,
+        "Price": 753.95,
+        "BuyPrice": 1000.0,
+        "AverageBuyPrice": 1000.0
+    },
+    {
+        "Ticker": "irfc",
+        "Company": "Indian Railway Finance Corp Ltd (IRFC)",
+        "Quantity": 4,
+        "Price": 100.0,
+        "BuyPrice": 100.0,
+        "AverageBuyPrice": 425.0
+    },
+    {
+        "Ticker": "icicibank",
+        "Company": "ICICI Bank Ltd (ICICIBANK)",
+        "Quantity": 12,
+        "Price": 1272.0,
+        "BuyPrice": 10.0,
+        "AverageBuyPrice": 41667.583333333336
+    },
+    {
+        "Ticker": "hdfcbank",
+        "Company": "hdfcbank",
+        "Quantity": 40,
+        "Price": 1500.0,
+        "BuyPrice": 1500.0,
+        "AverageBuyPrice": 937.5
+    },
+    {
+        "Ticker": "tcs",
+        "Company": "tcs",
+        "Quantity": 80,
+        "Price": 1000.0,
+        "BuyPrice": 1000.0,
+        "AverageBuyPrice": 1875.0
+    },
+    {
+        "Ticker": "wipro",
+        "Company": "wipro",
+        "Quantity": 40,
+        "Price": 500.0,
+        "BuyPrice": 500.0,
+        "AverageBuyPrice": 875.0
+    },
+    {
+        "Ticker": "itc",
+        "Company": "itc",
+        "Quantity": 160,
+        "Price": 8000.0,
+        "BuyPrice": 8000.0,
+        "AverageBuyPrice": 5437.5
+    },
+    {
+        "Ticker": "swiggy",
+        "Company": "swiggy",
+        "Quantity": 20,
+        "Price": 200.0,
+        "BuyPrice": 200.0,
+        "AverageBuyPrice": 150.0
+    },
+    {
+        "Ticker": "sunpharma",
+        "Company": "sunpharma",
+        "Quantity": 20,
+        "Price": 2000.0,
+        "BuyPrice": 2000.0,
+        "AverageBuyPrice": 1500.0
+    },
+    {
+        "Ticker": "tatasteel",
+        "Company": "tatasteel",
+        "Quantity": 20,
+        "Price": 200.0,
+        "BuyPrice": 200.0,
+        "AverageBuyPrice": 150.0
+    },
+    {
+        "Ticker": "pnb",
+        "Company": "pnb",
+        "Quantity": 3,
+        "Price": 300.0,
+        "BuyPrice": 300.0,
+        "AverageBuyPrice": 200.0
+    }
+]
