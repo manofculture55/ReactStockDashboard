@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Button, Container, Row, Col, Card } from "react-bootstrap"; // Import Bootstrap components
+import { Button, Container, Row, Col, Card } from "react-bootstrap";
 
 const Holdings = () => {
     const [holdings, setHoldings] = useState([]);
@@ -20,8 +20,13 @@ const Holdings = () => {
 
     const handleSellAll = async (ticker) => {
         try {
-            await axios.delete(`http://127.0.0.1:5000/api/holdings?ticker=${ticker}`);
-            fetchHoldings();
+            await axios.delete("http://127.0.0.1:5000/api/holdings", {
+                data: { Ticker: ticker }  
+            });
+
+            setHoldings((prevHoldings) => prevHoldings.filter(stock => stock.Ticker !== ticker));
+
+            fetchHoldings(); 
         } catch (error) {
             console.error("Error selling stock", error);
         }
@@ -38,7 +43,7 @@ const Holdings = () => {
                                 <Col sm={8}>
                                     <Card.Title>{stock.Company} ({stock.Ticker})</Card.Title>
                                     <Card.Text>Quantity: {stock.Quantity}</Card.Text>
-                                    <Card.Text>Buy Price: ₹{stock.Price}</Card.Text>
+                                    <Card.Text>Average Buy Price: ₹{stock.AverageBuyPrice}</Card.Text>
                                 </Col>
                                 <Col sm={4}>
                                     <Button

@@ -1,8 +1,8 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import requests
+from flask import Flask, request, jsonify  # type: ignore
+from flask_cors import CORS  # type: ignore
+import requests  # type: ignore
 import json
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup  # type: ignore
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -34,7 +34,6 @@ def fetch_stock_price(ticker, exchange):
 
     price_element = soup.find(class_="YMlKec fxKbKc")
 
-    # ✅ Handle missing price
     if price_element:
         try:
             current_price = float(price_element.text.strip()[1:].replace(",", ""))
@@ -57,7 +56,7 @@ def get_stock():
     data = fetch_stock_price(ticker, exchange)
 
     if data["price"] is None:
-        return jsonify({"error": "Failed to fetch stock price"}), 500  # ✅ Return error if price not found
+        return jsonify({"error": "Failed to fetch stock price"}), 500  
 
     return jsonify(data)
 
@@ -70,7 +69,7 @@ def manage_holdings():
         return jsonify(holdings)
 
     elif request.method == "POST":  # Buying a stock
-        data = request.json  # ✅ Correct indentation
+        data = request.json  
         ticker = data.get("Ticker")
         quantity = int(data.get("Quantity", 0))
         buy_price = float(data.get("BuyPrice", 0))
@@ -78,41 +77,33 @@ def manage_holdings():
         if not ticker or quantity <= 0 or buy_price <= 0:
             return jsonify({"error": "Invalid stock data"}), 400
 
-        # ✅ Check if stock already exists in holdings
         for stock in holdings:
             if stock["Ticker"] == ticker:
-                # ✅ Debugging logs
-                print(f"Before Buy: {stock}")  # Log before updating
-
-                # ✅ Correct calculation of average buy price
                 total_cost = (stock["AverageBuyPrice"] * stock["Quantity"]) + (buy_price * quantity)
                 new_quantity = stock["Quantity"] + quantity
                 new_average_price = total_cost / new_quantity
 
                 stock["Quantity"] = new_quantity
                 stock["AverageBuyPrice"] = round(new_average_price, 2)
-                stock["Price"] = round(buy_price, 2)  # ✅ Store latest buy price
-                stock["BuyPrice"] = round(buy_price, 2)  # ✅ Update BuyPrice
+                stock["Price"] = round(buy_price, 2)
+                stock["BuyPrice"] = round(buy_price, 2)
 
-                print(f"After Buy: {stock}")  # Log after updating
                 break
         else:
-            # ✅ Store user-entered BuyPrice instead of market price
             new_stock = {
                 "Ticker": ticker,
-                "Company": ticker,  # Keep same as before
+                "Company": ticker,  
                 "Quantity": quantity,
-                "Price": round(buy_price, 2),  # ✅ Ensure proper rounding
+                "Price": round(buy_price, 2),  
                 "BuyPrice": round(buy_price, 2),
                 "AverageBuyPrice": round(buy_price, 2)
             }
-            print(f"New Stock Added: {new_stock}")  # Debugging
             holdings.append(new_stock)
 
         save_holdings(holdings)
         return jsonify({"message": "Stock bought successfully"}), 201
 
-    elif request.method == "PUT":  # Selling a stock
+    elif request.method == "PUT":  # Selling a stock (Partial Sell)
         data = request.json
         ticker = data.get("Ticker")
         quantity = int(data.get("Quantity", 0))
@@ -127,15 +118,26 @@ def manage_holdings():
                 elif stock["Quantity"] == quantity:
                     holdings.remove(stock)
                 else:
-                    return jsonify({"error": "Not enough stocks to sell"}), 400  # ✅ Prevent selling more than available
+                    return jsonify({"error": "Not enough stocks to sell"}), 400  
 
                 save_holdings(holdings)
                 return jsonify({"message": "Stock sold successfully"}), 200
 
         return jsonify({"error": "Stock not found"}), 404
 
+    elif request.method == "DELETE":  # ✅ Sell All
+        data = request.get_json()
+        ticker = data.get("Ticker") if data else request.args.get("ticker")
+
+        if not ticker:
+            return jsonify({"error": "Ticker is required"}), 400
+
+        holdings = [stock for stock in holdings if stock["Ticker"] != ticker]
+
+        save_holdings(holdings)  
+        return jsonify({"message": "Stock sold successfully"}), 200
+
     return jsonify({"error": "Invalid request"}), 400
 
-# ✅ Correct placement of app.run()
 if __name__ == "__main__":
     app.run(debug=True)
