@@ -1,1 +1,10 @@
-[]
+[
+    {
+        "Ticker": "INFY",
+        "Company": "INFY",
+        "Quantity": 20,
+        "Price": 1500.0,
+        "BuyPrice": 1500.0,
+        "AverageBuyPrice": 1650.0
+    }
+]

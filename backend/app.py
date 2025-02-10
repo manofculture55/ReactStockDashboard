@@ -23,24 +23,24 @@ def save_holdings(holdings):
     with open(HOLDINGS_FILE, "w") as file:
         json.dump(holdings, file, indent=4)
 
-# Fetch current stock price
-def fetch_stock_price(ticker, exchange):
+# Fetch current stock price from Google Finance
+def fetch_stock_price(ticker, exchange="NSE"):
     url = f'https://www.google.com/finance/quote/{ticker}:{exchange}'
-    response = requests.get(url)
+    headers = {"User-Agent": "Mozilla/5.0"}
+    response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
 
     title_tag = soup.find('title')
     company_name = title_tag.text.split(' Stock Price')[0] if title_tag else ticker
 
     price_element = soup.find(class_="YMlKec fxKbKc")
+    current_price = None
 
     if price_element:
         try:
             current_price = float(price_element.text.strip()[1:].replace(",", ""))
         except ValueError:
             current_price = None
-    else:
-        current_price = None
 
     return {"company": company_name, "price": current_price}
 
@@ -66,7 +66,25 @@ def manage_holdings():
     holdings = load_holdings()
 
     if request.method == "GET":
-        return jsonify(holdings)
+        updated_holdings = []
+
+        for stock in holdings:
+            live_data = fetch_stock_price(stock["Ticker"], "NSE")  # Fetch live price
+            stock["Company"] = live_data["company"]  # Update company name
+            stock["CurrentPrice"] = live_data["price"]  # Update current price
+
+            if stock["CurrentPrice"] is not None:
+                stock["TotalInvested"] = round(stock["BuyPrice"] * stock["Quantity"], 2)
+                stock["Returns"] = round(((stock["CurrentPrice"] - stock["BuyPrice"]) / stock["BuyPrice"]) * 100, 2)
+                stock["ReturnsValue"] = round((stock["CurrentPrice"] - stock["BuyPrice"]) * stock["Quantity"], 2)
+            else:
+                stock["TotalInvested"] = None
+                stock["Returns"] = None
+                stock["ReturnsValue"] = None
+
+            updated_holdings.append(stock)
+
+        return jsonify(updated_holdings)
 
     elif request.method == "POST":  # Buying a stock
         data = request.json  
@@ -87,7 +105,6 @@ def manage_holdings():
                 stock["AverageBuyPrice"] = round(new_average_price, 2)
                 stock["Price"] = round(buy_price, 2)
                 stock["BuyPrice"] = round(buy_price, 2)
-
                 break
         else:
             new_stock = {
@@ -107,8 +124,9 @@ def manage_holdings():
         data = request.json
         ticker = data.get("Ticker")
         quantity = int(data.get("Quantity", 0))
+        sell_price = float(data.get("SellPrice", 0))  # New: Get sell price
 
-        if not ticker or quantity <= 0:
+        if not ticker or quantity <= 0 or sell_price <= 0:
             return jsonify({"error": "Invalid stock data"}), 400
 
         for stock in holdings:
